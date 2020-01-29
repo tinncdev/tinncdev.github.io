@@ -1,0 +1,14 @@
+@import "./mixins/media-mixins";
+@import "colors";
+
+html {
+  @include media($light-theme) {
+    --text-color: #{$text--dark};
+    --background-color: #{$background--light};
+  }
+
+  @include media($dark-theme) {
+    --text-color: #{$text--light};
+    --background-color: #{$background--dark};
+  }
+}
