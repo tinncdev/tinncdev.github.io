@@ -1,0 +1,39 @@
+name: Deploy build to master
+
+on:
+  push:
+    branches: 
+      - develop
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Set up build environment
+      run: |
+        npm config set scripts-prepend-node-path true
+        npm install yarn
+        yarn install
+    - name: Build
+      run: yarn build
+      env:
+        CI: true
+    - name: Deploy
+      run: |
+        git config --global user.name "Tin Nguyen"
+        git config --global user.email "tinnguyen263@outlook.com"
+        git remote set-url origin https://${{ secrets.TOKEN }}@github.com/tinncdev/tinncdev.github.io.git
+        yarn deploy
+      env:
+        CI: true
